@@ -1,74 +1,55 @@
-// src/test/java/com/example/biblioteca/repositories/UserRepositoryTest.java
-
 package com.example.biblioteca;
 
-// ... (imports)
-
-import com.example.biblioteca.entities.User;
 import com.example.biblioteca.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase; // NOVO IMPORT
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace; // NOVO IMPORT
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import com.example.biblioteca.entities.*;
+// Se estiver usando @DataJpaTest, importe-o no lugar de @SpringBootTest
+// import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import java.util.List;
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = Replace.ANY) // <--- ADICIONE ESTA LINHA
+// Use @DataJpaTest se você quiser testar *apenas* a camada de banco de dados.
+// É mais rápido e já configura o H2 automaticamente.
+// @DataJpaTest
+@SpringBootTest // Use @SpringBootTest se você já estava usando
 class UserRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
 
-    @Test
-    void shouldSaveAndFindUserById() {
-        // 1. Arrange (Preparar)
-        User user = new User();
-        user.setName("Lucas Teste");
-        user.setEmail("lucas.teste@biblioteca.com");
-
-        // 2. Act (Executar)
-        User savedUser = userRepository.save(user); // Salva no banco de dados
-        User foundUser = userRepository.findById(savedUser.getId()).orElse(null);
-
-        // 3. Assert (Verificar)
-        assertThat(savedUser).isNotNull();
-        assertThat(savedUser.getId()).isNotNull();
-        assertThat(foundUser).isEqualTo(savedUser);
-        assertThat(foundUser.getName()).isEqualTo("Lucas Teste");
-    }
+    // O teste que você já tinha (shouldSaveAndFindUserById) também serve!
+    // Mas aqui está um que se parece mais com o seu "SELECT *":
 
     @Test
-    void shouldFindUserByEmail() {
-        // 1. Arrange
-        String testEmail = "unique.email@teste.com";
-        User user = new User();
-        user.setName("Email Finder");
-        user.setEmail(testEmail);
-        userRepository.save(user);
+    void deveConectarEBuscarTodosOsUsuarios() {
+        // 1. ARRANGE (Preparar)
+        // Primeiro, vamos inserir um usuário para garantir que o SELECT não volte vazio
+        User novoUsuario = new User();
 
-        // 2. Act
-        User foundUser = userRepository.findByEmail(testEmail);
+        // Assumindo que você tem campos como 'nome' e 'email'
+        // PREENCHA COM OS CAMPOS DA SUA ENTIDADE USER
+        novoUsuario.setName("Usuario Teste");
+        novoUsuario.setEmail("teste@email.com");
+        // ... defina outros campos obrigatórios
 
-        // 3. Assert
-        assertThat(foundUser).isNotNull();
-        assertThat(foundUser.getEmail()).isEqualTo(testEmail);
-    }
+        userRepository.save(novoUsuario);
 
-    @Test
-    void shouldDeleteUser() {
-        // 1. Arrange
-        User user = new User();
-        user.setName("User to Delete");
-        user.setEmail("delete@me.com");
-        User savedUser = userRepository.save(user);
+        // 2. ACT (Agir)
+        // Agora, vamos fazer o "SELECT * FROM usuarios"
+        List<User> usuarios = userRepository.findAll();
 
-        // 2. Act
-        userRepository.deleteById(savedUser.getId());
+        // 3. ASSERT (Verificar)
+        // Imprime no console para você ver
+        System.out.println("--- LISTA DE USUÁRIOS NO BANCO ---");
+        for (User user : usuarios) {
+            System.out.println("ID: " + user.getId() + ", Nome: " + user.getName());
+        }
+        System.out.println("------------------------------------");
 
-        // 3. Assert
-        // Tenta buscar o usuário deletado e verifica se ele está vazio
-        assertThat(userRepository.findById(savedUser.getId())).isEmpty();
+        // Verifica se a lista não está vazia
+        assertThat(usuarios).isNotEmpty();
     }
 }

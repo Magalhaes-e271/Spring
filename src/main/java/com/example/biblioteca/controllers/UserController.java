@@ -1,4 +1,5 @@
 package com.example.biblioteca.controllers;
+
 import com.example.biblioteca.entities.User;
 import com.example.biblioteca.repositories.UserRepository;
 
@@ -8,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/usuarios")
 public class UserController {
 
     @Autowired

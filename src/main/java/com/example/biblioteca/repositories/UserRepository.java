@@ -1,16 +1,10 @@
 package com.example.biblioteca.repositories;
 
-// package do UserRepository
-
-
-// Imports necessários
+import com.example.biblioteca.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.example.biblioteca.entities.User; // Importa a entidade User
 
-// A interface UserRepository
+import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    // Este método é criado automaticamente pelo Spring Data JPA
-    // e permite buscar um usuário pelo email.
-    User findByEmail(String email);
+    Optional<User> findByEmail(String email);
 }

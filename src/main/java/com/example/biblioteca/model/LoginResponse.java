@@ -1,4 +1,4 @@
-package com.example.biblioteca.dto;
+package com.example.biblioteca.model;
 
 import com.example.biblioteca.entities.User;
 

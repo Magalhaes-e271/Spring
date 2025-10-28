@@ -14,6 +14,8 @@ public class User {
     private String email;
     private String senha;
 
+    private String type; // NOVO CAMPO: tipo de usuário (ex: PADRAO, ADMIN)
+
     // Getters e Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -26,4 +28,7 @@ public class User {
 
     public String getSenha() { return senha; }
     public void setSenha(String senha) { this.senha = senha; }
+
+    public String getType() { return type; }
+    public void setType(String type) { this.type = type; }
 }

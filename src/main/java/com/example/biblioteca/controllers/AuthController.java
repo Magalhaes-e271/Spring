@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/usuarios")
-@CrossOrigin(origins = "*") // Permite Android
+@CrossOrigin(origins = "*") // Permite requisições do Android
 public class AuthController {
 
     private final UserService userService;
@@ -23,5 +23,23 @@ public class AuthController {
         Optional<User> usuarioAutenticado = userService.autenticar(user.getEmail(), user.getSenha());
         return usuarioAutenticado.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(401).build());
+    }
+
+    @PostMapping("/cadastrar")
+    public ResponseEntity<?> cadastrar(@RequestBody User user) {
+        try {
+            // Define valor padrão para 'type' caso não tenha sido enviado
+            if (user.getType() == null || user.getType().isEmpty()) {
+                user.setType("n"); // você pode colocar "USER" ou outro valor que faça sentido
+            }
+
+            User usuarioSalvo = userService.cadastrarUsuario(user);
+
+            return ResponseEntity.ok(usuarioSalvo);
+
+        } catch (Exception e) {
+            // Retorna mensagem de erro detalhada
+            return ResponseEntity.status(500).body("Erro ao cadastrar usuário: " + e.getMessage());
+        }
     }
 }

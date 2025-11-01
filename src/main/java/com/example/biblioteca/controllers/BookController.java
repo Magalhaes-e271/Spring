@@ -43,17 +43,10 @@ public class BookController {
     }
 
     // ✅ Cadastrar novo livro (com imagem)
-    @PostMapping(value = "/cadastrar", consumes = {"multipart/form-data"})
-    public ResponseEntity<?> cadastrar(
-            @RequestPart("book") Book book,
-            @RequestPart(value = "img", required = false) MultipartFile imagem
-    ) {
+    @PostMapping
+    public ResponseEntity<?> cadastrar(@RequestBody Book book) {
         try {
-            // Salvar imagem (se enviada)
-            if (imagem != null && !imagem.isEmpty()) {
-                String nomeArquivo = salvarImagem(imagem);
-                book.setImg("/uploads/" + nomeArquivo);
-            } else if (book.getImg() == null || book.getImg().isEmpty()) {
+            if (book.getImg() == null || book.getImg().isEmpty()) {
                 book.setImg("https://placehold.co/200x300");
             }
 
@@ -68,7 +61,6 @@ public class BookController {
             return ResponseEntity.status(500).body("Erro ao cadastrar livro: " + e.getMessage());
         }
     }
-
     // ✅ Atualizar livro (com imagem opcional)
     @PutMapping(value = "/{id}", consumes = {"multipart/form-data"})
     public ResponseEntity<?> atualizar(
